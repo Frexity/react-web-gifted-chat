@@ -146,12 +146,7 @@ export default class MessageContainer extends React.Component {
           automaticallyAdjustContentInsets={false}
           initialListSize={20}
           pageSize={20}
-
-          ref={component => {
-            if (component) {
-              this._scrollView = component._scrollViewRef
-            }
-          }}
+          ref={ref => { this._scrollView = ref }}
           {...this.props.listViewProps}
           onContentSizeChange={() => this._scrollView.scrollToEnd()}
           dataSource={this.state.dataSource}
