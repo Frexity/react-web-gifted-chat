@@ -7,6 +7,8 @@ import {
   ViewPropTypes,
 } from 'react-native';
 
+import ParsedText from './parsed-text'
+
 export default class MessageText extends React.Component {
   constructor(props) {
     super(props);
@@ -49,7 +51,7 @@ export default class MessageText extends React.Component {
   render() {
     return (
       <View style={[styles[this.props.position].container, this.props.containerStyle[this.props.position]]}>
-        <Text
+        <ParsedText
           style={[styles[this.props.position].text, this.props.textStyle[this.props.position]]}
           parse={[
             {type: 'url', style: StyleSheet.flatten([styles[this.props.position].link, this.props.linkStyle[this.props.position]]), onPress: this.onUrlPress},
@@ -58,7 +60,7 @@ export default class MessageText extends React.Component {
           ]}
         >
           {this.props.currentMessage.text}
-        </Text>
+        </ParsedText>
       </View>
     );
   }
