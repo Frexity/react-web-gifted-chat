@@ -44,7 +44,6 @@ class ParsedText extends React.Component {
     const textExtraction = new TextExtraction(this.props.children, this.getPatterns());
 
     return textExtraction.parse().map((props, index) => {
-      console.log(props);
       return (
         <Text
           key={`parsedText-${index}`}
