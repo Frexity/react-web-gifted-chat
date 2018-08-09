@@ -1,6 +1,10 @@
 .DS_Store
 node_modules/
+.expo/
 npm-debug.log
 TODO.md
-dist/
+
 .idea
+.vscode
+Exponent-*.app
+*.log
