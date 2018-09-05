@@ -45,6 +45,7 @@ class GiftedChat extends React.Component {
     this._isMounted = false;
     this._keyboardHeight = 0;
     this._bottomOffset = 0;
+    this._customViewHeight = 0;
     this._maxHeight = null;
     this._isFirstLayout = true;
     this._locale = 'en';
@@ -54,7 +55,6 @@ class GiftedChat extends React.Component {
       isInitialized: false, // initialization will calculate maxHeight before rendering the chat
       composerHeight: MIN_COMPOSER_HEIGHT,
       messagesContainerHeight: null,
-      isShowCustomView: false,
       typingDisabled: false
     };
 
@@ -190,6 +190,14 @@ class GiftedChat extends React.Component {
     return this._bottomOffset;
   }
 
+  setCustomViewHeight(value) {
+    this._customViewHeight = value;
+  }
+
+  getCustomViewHeight() {
+    return this._customViewHeight;
+  }
+
   setIsFirstLayout(value) {
     this._isFirstLayout = value;
   }
@@ -237,7 +245,7 @@ class GiftedChat extends React.Component {
    * Returns the height, based on current window size, taking the keyboard into account.
    */
   getMessagesContainerHeightWithKeyboard(composerHeight = this.state.composerHeight) {
-    return this.getBasicMessagesContainerHeight(composerHeight) - this.getKeyboardHeight() + this.getBottomOffset();
+    return this.getBasicMessagesContainerHeight(composerHeight) - this.getKeyboardHeight() + this.getBottomOffset() - this.getCustomViewHeight();
   }
 
   prepareMessagesContainerHeight(value) {
@@ -268,11 +276,7 @@ class GiftedChat extends React.Component {
     this.setIsTypingDisabled(true);
     this.setKeyboardHeight(0);
     this.setBottomOffset(0);
-    if (this.state.isShowCustomView) {
-      // when emoji open
-      return;
-    }
-    const newMessagesContainerHeight = this.getBasicMessagesContainerHeight();
+    const newMessagesContainerHeight = this.getMessagesContainerHeightWithKeyboard();
     if (this.props.isAnimated === true) {
       Animated.timing(this.state.messagesContainerHeight, {
         toValue: newMessagesContainerHeight,
@@ -300,8 +304,8 @@ class GiftedChat extends React.Component {
   }
 
   onCustomViewShow(customViewHeight) {
-    this.setState({ isShowCustomView: true });
-    const newMessagesContainerHeight = this.getBasicMessagesContainerHeight() - customViewHeight;
+    this.setCustomViewHeight(customViewHeight);
+    const newMessagesContainerHeight = this.getMessagesContainerHeightWithKeyboard();
     Animated.timing(this.state.messagesContainerHeight, {
       toValue: newMessagesContainerHeight,
       duration: 210,
@@ -309,12 +313,8 @@ class GiftedChat extends React.Component {
   }
 
   onCustomViewHide() {
-    this.setState({ isShowCustomView: false });
-    if (this.textInput.isFocused()) {
-      // TextInput focused and keyboard open
-      return;
-    }
-    const newMessagesContainerHeight = this.getBasicMessagesContainerHeight();
+    this.setCustomViewHeight(0);
+    const newMessagesContainerHeight = this.getMessagesContainerHeightWithKeyboard();
     Animated.timing(this.state.messagesContainerHeight, {
       toValue: newMessagesContainerHeight,
       duration: 210,
